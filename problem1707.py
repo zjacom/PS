@@ -4,27 +4,23 @@ from collections import defaultdict, deque
 
 # input
 K = int(input())
-
-result = ["YES"] * K
+result = []
 
 def bfs(node):
-    global visited, color
+    global temp, graph, visited
 
-    q = deque([(node)])
+    q = deque([node])
+    visited[node] = 1
 
     while q:
-        cn = q.popleft()
-        for nxt in graph[cn]:
+        n = q.popleft()
+
+        for nxt in graph[n]:
             if not visited[nxt]:
                 q.append(nxt)
-                if color[cn] == 1:
-                    color[nxt] == -1
-                else:
-                    color[nxt] == 1
-            if color[cn] == color[nxt]:
-                return False
-    return True
-                
+                visited[nxt] = -visited[n]
+            elif visited[n] == visited[nxt]:
+                return True
 
 
 for idx in range(K):
@@ -35,13 +31,14 @@ for idx in range(K):
         graph[u].append(v)
         graph[v].append(u)
     
-    # logic
-    visited = [False] * (V + 1)
-    visited[1] = True
-    color = [0] * (V + 1)
-    color[1] = 1
-    if not bfs(1):
-        result[idx] = "NO"
-    
+    visited = [0] * (V + 1)
+    temp = "YES"
+    for i in range(1, V + 1):
+        if not visited[i]:
+            if bfs(i):
+                temp = "NO"
+                break
+    result.append(temp)
+
 for r in result:
     print(r)
