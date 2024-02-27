@@ -29,5 +29,6 @@ for idx in range(m):
 for idx, value in enumerate(arr):
     if union_parent(value[0], value[1]):
         result = idx + 1
+        break
 
 print(result)

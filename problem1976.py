@@ -19,18 +19,18 @@ def union_city(a, b):
 
 
 N = int(input())
-cities = [city for city in range(N)]
 M = int(input())
-for idx in range(M):
+cities = [city for city in range(N + 1)]
+for idx in range(N):
     arr = list(map(int, input().split()))
     for jdx, value in enumerate(arr):
         if value == 1:
-            union_city(idx, jdx)
+            union_city(idx + 1, jdx + 1)
 
 root = list(map(int, input().split()))
 result = "YES"
 for idx in range(1, len(root)):
-    if find(root[idx] - 1) != find(root[idx - 1] - 1):
+    if find(root[idx]) != find(root[idx - 1]):
         result = "NO"
         break
 
