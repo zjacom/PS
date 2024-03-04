@@ -1,5 +1,4 @@
 from collections import defaultdict, deque
-from itertools import permutations
 
 N = int(input())
 
@@ -11,28 +10,30 @@ for _ in range(N - 1):
     graph[b].append(a)
 
 visited = [False] * (N + 1)
-answer = []
+visited[1] = True
+answer, path = deque([1]), []
 right = list(map(int, input().split()))
 
-def recur(queue):
-    global answer
-    if not queue:
-        return
-    answer += queue[:]
-    if len(answer) == N and answer == right:
-        print(1)
-        exit(0)
-    for node in queue:
-        visited[node] = True
-    
-    for node in queue:
-        order = list(permutations(graph[node], len(graph[node])))
-        temp = []
-        for arr in order:
-            for ele in arr:
-                if not visited[ele]:
-                    temp.append(ele)
-        recur(temp)
-        answer -= temp[:]
 
-recur([1])
+def recur():
+    global answer, path, visited
+    print(answer, path)
+    while answer:
+        node = answer.pop()
+        path.append(node)
+        temp = []
+        for nxt in graph[node]:
+            if not visited[nxt]:
+                temp.append(nxt)
+                visited[nxt] = True
+        if temp:
+            count = len(temp)
+            print(count)
+            for idx in range(len(temp)):
+                answer += temp[idx:] + temp[:idx]
+                recur()
+                for _ in range(count):
+                    visited[answer.pop()] = False
+                    path.pop()
+
+recur()
