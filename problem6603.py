@@ -11,6 +11,6 @@ while True:
 for idx in range(len(arr)):
     li = list(combinations(arr[idx][1:], 6))
     for num in li:
-        print(num)
+        print(*num)
     if idx != len(arr) - 1:
         print()
