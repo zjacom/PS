@@ -29,6 +29,6 @@ def recur(y, x, visited, count):
 for y in range(N):
     for x in range(N):
         visited = [[0] * N for _ in range(N)]
-        recur(y, x, visited, N)
+        recur(y, x, visited, N - 1)
 
 print(answer)
