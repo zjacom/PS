@@ -1,6 +1,4 @@
 from collections import defaultdict, deque
-import sys
-input = sys.stdin.readline
 
 N = int(input())
 
@@ -11,29 +9,31 @@ for _ in range(N - 1):
     graph[a].append(b)
     graph[b].append(a)
 
-right = list(map(int, input().split()))
+order = list(map(int, input().split()))
+visited = [False] * (N + 1)
+visited[1] = True
+children = [set() for _ in range(N+1)] 
 q = deque([1])
-visited = [-1] * (N + 1)
-visited[1] = 0
-childrens = [{1}]
 
 while q:
     node = q.popleft()
-    temp = set()
     for nxt in graph[node]:
-        if visited[nxt] == -1:
+        if not visited[nxt]:
+            children[node].add(nxt)
             q.append(nxt)
-            visited[nxt] = node
-            temp.add(nxt)
-    if temp:
-        childrens.append(temp)
+            visited[nxt] = True
+print(children)
 
-answer = 1
-start = 0
-for children in childrens:
-    length = len(children)
-    if children != set(right[start:start+length]):
-        answer = 0
+next_index = 1
+for i in order:
+    if next_index == N:
         break
-    start = start + length
-print(answer)
+    c_length = len(children[i]) #자식의 길이
+    c1 = set(order[next_index : next_index+c_length])
+    c2 = children[i]
+    if c1 != c2:
+        print(0)
+        exit()
+    next_index += c_length
+
+print(1)

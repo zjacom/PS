@@ -1,5 +1,4 @@
 from collections import defaultdict
-from itertools import permutations
 
 N = int(input())
 
@@ -10,31 +9,28 @@ for _ in range(N - 1):
     graph[a].append(b)
     graph[b].append(a)
 
-visited = [False] * (N + 1)
-visited[1] = True
+order = list(map(int, input().split()))
+childs = [[] for _ in range(N + 1)]
 
-right = list(map(int, input().split()))
+visited = [-1] * (N + 1)
 
-def dfs(node, path):
-    visited[node] = True
-    path.append(node)
+def dfs(node, prev):
+    visited[node] = prev
 
-    if node in path:
-        return
-    if len(path) > N:
-        return
-    if len(path) == N:
-        print(path)
-        return
+    for nxt in graph[node]:
+        if visited[nxt] == -1:
+            childs[node].append(nxt)
+            dfs(nxt, node)
 
-    if len(graph[node]) == 1 and not visited[graph[node][0]]:
-        dfs(graph[node][0], path)
-        visited[graph[node][0]] = False
-    elif len(graph[node]) > 1:
-        for arr in list(permutations(graph[node], len(graph[node]))):
-            for nxt in arr:
-                if not visited[nxt]:
-                    dfs(nxt, path)
-                    visited[nxt] = False
+dfs(1, 0)
+# 다음 노드가 자식이라면?
+    # O -> idx + 1
+    # X -> 첫 비교 노드의 자식 노드인지 확인하고
+# 만약 해당 노드의 자식이 없는게 조회된다면 오류!
+idx = 0
+while idx < len(order):
+    if order[idx + 1] in childs[idx]:
+        idx += 1
+    else:
 
-dfs(1, [])
+print(childs)
