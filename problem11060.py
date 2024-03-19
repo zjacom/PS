@@ -18,5 +18,8 @@ def recur(idx):
     
     return dp[idx]
 
+if N == 1:
+    print(0)
+    exit(0)
 recur(0)
 print(dp[0]) if dp[0] != sys.maxsize else print(-1)
