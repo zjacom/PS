@@ -1,5 +1,4 @@
 from collections import deque
-import heapq
 
 T = int(input())
 
@@ -15,42 +14,25 @@ def checker(num):
             return False
     return True
 
-
-def func(start, end):
+def bfs(start, end):
     global visited
-    q = [(0, start)]
+    q = deque([(start, 0)])
     while q:
-        cnt, node = heapq.heappop(q)
+        node, cnt = q.popleft()
+
         if node == end:
             return cnt
-        a, b, c, d = node[0], node[1], node[2], node[3]
-
-        for num in range(1, 10):
-            num = str(num)
-            if num != a and not visited[int(num + b + c + d)]:
-                if checker(int(num + b + c + d)):
-                    heapq.heappush(q, (cnt + 1, num + b + c + d))
-                    visited[int(num + b + c + d)] = 1
-        for num in range(10):
-            num = str(num)
-            if num != b and not visited[int(a + b + num + d)]:
-                if checker(int(a + num + c + d)):
-                    heapq.heappush(q, (cnt + 1, a + num + c + d))
-                    visited[int(a + num + c + d)] = 1
-            if num != c and not visited[int(a + b + num + d)]:
-                if checker(int(a + b + num + d)):
-                    heapq.heappush(q, (cnt + 1, a + b + num + d))
-                    visited[int(a + b + num + d)] = 1
-        for num in range(1, 10, 2):
-            num = str(num)
-            if num != d and not visited[int(a + b + c + num)]:
-                if checker(int(a + b + c + num)):
-                    heapq.heappush(q, (cnt + 1, a + b + c + num))
-                    visited[int(a + b + c + num)] = 1
-
+        
+        for n in range(10):
+            for i in range(4):
+                num = node[:i] + str(n) + node[i + 1:]
+                if checker(int(num)) and int(num) > 999:
+                    if not visited[int(num)]:
+                        q.append((num, cnt + 1))
+                        visited[int(num)] = 1
+    return "Impossible"
 
 for s, e in arr:
     visited = [0] * 10_000
     visited[int(s)] = 1
-    answer = func(s, e)
-    print(answer) if answer != None else print("Impossible")
+    print(bfs(s, e))
