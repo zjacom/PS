@@ -1,23 +1,15 @@
-# 10942번
-N = int(input())
-arr = list(map(int, input().split()))
+# 10422번
 
-M = int(input())
-answer = []
-for _ in range(M):
-    a, b = map(int, input().split())
-    answer.append((a, b))
+T = int(input())
+answer = [int(input()) for _ in range(T)]
 
-dp = [[0] * N for _ in range(N)]
-for i in range(N):
-    dp[i][i] = 1
+dp = [0] * 5001
+dp[0] = 1
 
-for x in range(1, N):
-    for y in range(x):
-        if arr[x] == arr[y]:
-            dp[y][x] = dp[y + 1][x - 1]
-        if x - y == 1 and arr[x] == arr[y]:
-            dp[y][x] = 1
+for idx in range(2, 5001, 2):
+    for jdx in range(2, idx + 1, 2):
+        dp[idx] += dp[idx - jdx] * dp[jdx - 2]
+    dp[idx] = dp[idx] % 1_000_000_007
 
-for y, x in answer:
-    print(dp[y - 1][x - 1])
+for ans in answer:
+    print(dp[ans])
