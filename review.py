@@ -1,31 +1,50 @@
-# 11066번
+# 6087번
+
+from collections import deque
 import sys
 
-def file_union(K, arr):
-    dp = [[sys.maxsize] * K for _ in range(K)]
+W, H = map(int, input().split())
 
-    for i in range(K):
-        dp[i][i] = 0
+graph = [list(map(str, input().strip())) for _ in range(H)]
+points = []
+for y in range(H):
+    for x in range(W):
+        if graph[y][x] == "C":
+            points.append((y, x))
+            graph[y][x] = "."
 
-    for x in range(1, K):
-        for y in range(x - 1, -1, -1):
-            if x - y == 1:
-                dp[y][x] = arr[y] + arr[x]
-            else:
-                cost = sys.maxsize
-                for nx in range(x):
-                    cost = min(cost, dp[y][nx] + dp[nx + 1][x])
-                dp[y][x] = cost + sum(arr[y:x + 1])
-    return dp[0][-1]
+sy, sx, ey, ex = points[0][0], points[0][1], points[1][0], points[1][1]
 
-answer = []
-T = int(input())
-for _ in range(T):
-    k = int(input())
-    a = list(map(int, input().split()))
+dy, dx = [0, 0, 1, -1], [1, -1, 0, 0]
 
-    answer.append(file_union(k, a))
+q = deque()
 
+visited = [[[sys.maxsize] * 4 for _ in range(W)] for _ in range(H)]
 
-for ans in answer:
-    print(ans)
+for i in range(4):
+    ny, nx = sy + dy[i], sx + dx[i]
+    if 0 <= ny < H and 0 <= nx < W:
+        if graph[ny][nx] == ".":
+            q.append((ny, nx, i))
+            visited[ny][nx][i] = 0
+
+while q:
+    y, x, prev = q.popleft()
+
+    for i in range(4):
+        ny, nx = y + dy[i], x + dx[i]
+        if 0 <= ny < H and 0 <= nx < W:
+            if graph[ny][nx] == ".":
+                cnt = visited[y][x][prev]
+                if prev == 0 or prev == 1:
+                    if i == 2 or i == 3:
+                        cnt += 1
+                else:
+                    if i == 0 or i == 1:
+                        cnt += 1
+                
+                if visited[ny][nx][i] > cnt:
+                    visited[ny][nx][i] = cnt
+                    q.append((ny, nx, i))
+
+print(min(visited[ey][ex]))
