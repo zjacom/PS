@@ -1,50 +1,20 @@
-# 6087번
-
-from collections import deque
+# 2294번
 import sys
 
-W, H = map(int, input().split())
+n, k = map(int, input().split())
+coins = []
+for _ in range(n):
+    coins.append(int(input()))
 
-graph = [list(map(str, input().strip())) for _ in range(H)]
-points = []
-for y in range(H):
-    for x in range(W):
-        if graph[y][x] == "C":
-            points.append((y, x))
-            graph[y][x] = "."
+dp = [-1] * (k + 1)
+dp[0] = 0
 
-sy, sx, ey, ex = points[0][0], points[0][1], points[1][0], points[1][1]
+for idx in range(1, k + 1):
+    mini = sys.maxsize
+    for coin in coins:
+        if idx - coin >= 0 and dp[idx -coin] != -1:
+            mini = min(mini, dp[idx - coin] + 1)
+    if mini != sys.maxsize:
+        dp[idx] = mini
 
-dy, dx = [0, 0, 1, -1], [1, -1, 0, 0]
-
-q = deque()
-
-visited = [[[sys.maxsize] * 4 for _ in range(W)] for _ in range(H)]
-
-for i in range(4):
-    ny, nx = sy + dy[i], sx + dx[i]
-    if 0 <= ny < H and 0 <= nx < W:
-        if graph[ny][nx] == ".":
-            q.append((ny, nx, i))
-            visited[ny][nx][i] = 0
-
-while q:
-    y, x, prev = q.popleft()
-
-    for i in range(4):
-        ny, nx = y + dy[i], x + dx[i]
-        if 0 <= ny < H and 0 <= nx < W:
-            if graph[ny][nx] == ".":
-                cnt = visited[y][x][prev]
-                if prev == 0 or prev == 1:
-                    if i == 2 or i == 3:
-                        cnt += 1
-                else:
-                    if i == 0 or i == 1:
-                        cnt += 1
-                
-                if visited[ny][nx][i] > cnt:
-                    visited[ny][nx][i] = cnt
-                    q.append((ny, nx, i))
-
-print(min(visited[ey][ex]))
+print(dp[-1])
