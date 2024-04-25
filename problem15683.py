@@ -4,30 +4,50 @@ N, M = map(int, input().split())
 arr = [list(map(int, input().split())) for _ in range(N)]
 answer = 10000000
 
-d_one = [[(0, 1)], [(0, -1)], [(1, 0)], [(-1, 0)]]
-d_two = [[(0, 1), (0, -1)], [(1, 0), (-1, 0)]]
-d_three = [[(0, 1), (0, -1)], [(0, 1), (-1, 0)], [(0, -1), (1, 0)], [(0, -1), (-1, 0)]]
-d_four = [[(0, 1), (-1, 0), (0, -1)], [(0, 1), (-1, 0), (1, 0)], [(0, 1), (1, 0), (0, -1)], [(1, 0), (-1, 0), (0, -1)]]
-d_five = [[(0, 1), (1, 0), (-1, 0), (0, -1)]]
+dy, dx = [1, 0, -1, 0], [0, 1, 0, -1]
+
+directions = {
+    1: [[0], [1], [2], [3]],
+    2: [[0, 2], [1, 3]],
+    3: [[0, 1], [1, 2], [2, 3], [3, 0]],
+    4: [[0, 1, 2], [1, 2, 3], [2, 3, 0], [3, 0, 1]],
+    5: [[0, 1, 2, 3]]
+}
+
+def checker(y, x):
+    return y < 0 or y > N - 1 or x < 0 or x > M - 1
 
 
-def checker(y, x, dy, dx, graph):
-    a = 1
-    while True:
-        ny, nx = y + (dy * a), x + (dx * a)
-        if 0 > ny or ny >= N or 0 or nx >= M or nx < 0:
-            break
-        if graph[ny][nx] == 0:
+def move(y, x, direc, graph):
+    for d in direc:
+        ny, nx = y, x
+        
+        while True:
+            nx += dx[d]
+            ny += dy[d]
+            if checker(ny, nx) or graph[ny][nx] == 6:
+                break
+            if graph[ny][nx] != 0:
+                continue
             graph[ny][nx] = -1
-            a += 1
-        elif graph[ny][nx] == 6:
-            break
-        else:
-            a += 1
     return graph
 
 
-def recur(graph):
+def init():
+    cctv, answer = [], 0
+    for y in range(N):
+        for x in range(M):
+            if arr[y][x] != 6 and arr[y][x] != 0:
+                cctv.append((y, x, arr[y][x]))
+            if arr[y][x] == 0:
+                answer += 1
+    
+    return cctv, answer
+
+
+cctvs, answer = init()
+
+def cal(graph):
     global answer
     cnt = 0
     for y in range(N):
@@ -36,37 +56,22 @@ def recur(graph):
                 cnt += 1
     answer = min(answer, cnt)
 
-    for y in range(N):
-        for x in range(M):
-            if graph[y][x] == 1:
-                graph[y][x] = -1
-                for d in d_one:
-                    for dy, dx in d:
-                        g = checker(y, x, dy, dx, copy.deepcopy(graph))
-                        recur(g)
-            elif graph[y][x] == 2:
-                graph[y][x] = -1
-                for d in d_two:
-                    for dy, dx in d:
-                        g = checker(y, x, dy, dx, copy.deepcopy(graph))
-                        recur(g)
-            elif graph[y][x] == 3:
-                graph[y][x] = -1
-                for d in d_three:
-                    for dy, dx in d:
-                        g = checker(y, x, dy, dx, copy.deepcopy(graph))
-                        recur(g)
-            elif graph[y][x] == 4:
-                graph[y][x] = -1
-                for d in d_four:
-                    for dy, dx in d:
-                        g = checker(y, x, dy, dx, copy.deepcopy(graph))
-                        recur(g)
-            elif graph[y][x] == 5:
-                graph[y][x] = -1
-                for d in d_five:
-                    for dy, dx in d:
-                        g = checker(y, x, dy, dx, copy.deepcopy(graph))
-                        recur(g)
-recur(arr)
+
+def recur(idx, graph):
+    if idx == len(cctvs):
+        cal(graph)
+        return
+
+    # tmp = [[j for j in graph[i]] for i in range(N)]
+    tmp = copy.deepcopy(graph)
+    
+    y, x, d = cctvs[idx]
+
+    for dir in directions[d]:
+        graph = move(y, x, dir, graph)
+        recur(idx + 1, graph)
+        graph = copy.deepcopy(tmp)
+
+
+recur(0, arr)
 print(answer)
