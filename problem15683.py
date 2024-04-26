@@ -63,14 +63,15 @@ def recur(idx, graph):
         return
 
     # tmp = [[j for j in graph[i]] for i in range(N)]
-    tmp = copy.deepcopy(graph)
-    
+    # tmp = copy.deepcopy(graph)
+    tmp = graph[:]    
+
     y, x, d = cctvs[idx]
 
     for dir in directions[d]:
         graph = move(y, x, dir, graph)
         recur(idx + 1, graph)
-        graph = copy.deepcopy(tmp)
+        graph = tmp[:]
 
 
 recur(0, arr)
