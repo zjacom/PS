@@ -3,8 +3,9 @@ from itertools import combinations
 
 N, M = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(N)]
-chickens = []
-homes = []
+
+homes, chickens = [], []
+answer = sys.maxsize
 
 for y in range(N):
     for x in range(N):
@@ -13,23 +14,22 @@ for y in range(N):
         elif graph[y][x] == 2:
             chickens.append((y, x))
 
-answer = sys.maxsize
-
 if M == 1:
     for cy, cx in chickens:
-        dis = 0
+        temp = 0
         for hy, hx in homes:
-            dis += abs(hy - cy) + abs(hx - cx)
-        answer = min(answer, dis)
+            temp += (abs(cy - hy) + abs(cx - hx))
+        answer = min(answer, temp)
 
 else:
-    cnt = 0
-    remain_chickens = list(combinations(chickens, M))
-    for hy, hx in homes:
-        dis = sys.maxsize
-        for cy, cx in chickens:
-            dis = min(dis, abs(hy - cy) + abs(hx - cx))
-        cnt += dis
-    answer = min(answer, cnt)
+    chickens = list(combinations(chickens, M))
+    for selected_chickens in chickens:
+        temp1 = 0
+        for hy, hx in homes:
+            temp = sys.maxsize
+            for cy, cx in selected_chickens:
+                temp = min(temp, abs(hy - cy) + abs(hx - cx))
+            temp1 += temp
+        answer = min(answer, temp1)
 
 print(answer)

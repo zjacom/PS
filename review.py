@@ -1,47 +1,41 @@
-# 1600번
-from collections import deque
+# 16637번
 import sys
 
-k = int(input())
-W, H = map(int, input().split())
-graph = [list(map(int, input().split())) for _ in range(H)]
-visited = [[[sys.maxsize for _ in range(8)] for _ in range(W)] for _ in range(H)]
-dy, dx = [0, 0, 1, -1], [1, -1, 0, 0]
-hy, hx = [-2, -2, -1, -1, 2, 2, 1, 1], [1, -1, 2, -2, 1, -1, 2, -2]
-q = deque([(0, 0, k)])
-for i in range(8):
-    visited[0][0][i] = 0
+N = int(input())
+me = list(input())
+answer = -sys.maxsize
 
 
-def checker(y, x):
-    return y < 0 or y >= H or x < 0 or x >= W
-
-
-while q:
-    y, x, K = q.popleft()
-
-    if y == H - 1 and x == W - 1:
-        if visited[y][x][K] == sys.maxsize:
-            print(-1)
-            exit(0)
-        else:
-            print(visited[y][x][K])
-            exit(0)
-    for i in range(4):
-        ny, nx = y + dy[i], x + dx[i]
-        if checker(ny, nx):
-            continue
-        if graph[ny][nx] == 0:
-            if visited[ny][nx][K] > visited[y][x][K] + 1:
-                q.append((ny, nx, K))
-                visited[ny][nx][K] = visited[y][x][K] + 1
+def calculator(prev, operator, next):
+    if operator == "*":
+        return prev * next
+    elif operator == "+":
+        return prev + next
+    else:
+        return prev - next
     
-    if K > 0:
-        for i in range(8):
-            ny, nx = y + hy[i], x + hx[i]
-            if checker(ny, nx):
-                continue
-            if graph[ny][nx] == 0:
-                if visited[ny][nx][K - 1] > visited[y][x][K] + 1:
-                    q.append((ny, nx, K - 1))
-                    visited[ny][nx][K - 1] = visited[y][x][K] + 1
+
+def make_result(arr):
+    result = arr[0]
+    for i in range(1, len(arr), 2):
+        result = calculator(result, arr[i], arr[i + 1])
+    return result
+
+
+def recur(idx, arr):
+    global answer
+    
+    if idx >= len(arr):
+        answer = max(answer, make_result(arr))
+        return
+    
+    recur(idx + 2, arr)
+    recur(idx + 2, arr[:idx-1] + [calculator(arr[idx - 1], arr[idx], arr[idx + 1])] + arr[idx+2:])
+
+
+for i in range(N):
+    if me[i].isdigit():
+        me[i] = int(me[i])
+
+recur(1, me)
+print(answer)
