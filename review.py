@@ -1,35 +1,26 @@
-# 17406번
-from itertools import permutations
-import sys
+# 2252번
+from collections import defaultdict, deque
 
-N, M, K = map(int ,input().split())
-temp = [list(map(int, input().split())) for _ in range(N)]
-orders = [list(map(int, input().split())) for _ in range(K)]
+N, M = map(int, input().split())
+graph = defaultdict(list)
+indegrees = [0] * (N + 1)
+for _ in range(M):
+    a, b = map(int, input().split())
+    indegrees[b] += 1
+    graph[a].append(b)
 
+q = deque()
+for i in range(1, N + 1):
+    if indegrees[i] == 0:
+        q.append(i)
 
-def func(y1, x1, y2, x2, g):
-    copied_graph = [[n for n in row] for row in g]
-    
-    a = 1
-    while y1 + x1 < y2 + x2:
-        for x in range(x1 + 1, x2 + 1):
-            copied_graph[y1][x] = graph[y1][x - 1]
-        for y in range(y1 + 1, y2 + 1):
-            copied_graph[y][x2] = graph[y - 1][x2]
-        for x in range(x2 - 1, x1 - 1, -1):
-            copied_graph[y2][x] = graph[y2][x + 1]
-        for y in range(y2 - 1, y1 - 1, -1):
-            copied_graph[y][x1] = graph[y + 1][x1]
-        y1, x1, y2, x2 = y1 + a, x1 + a, y2 - a, x2 - a
-    
-    return copied_graph
+result = []
+while q:
+    node = q.popleft()
+    result.append(node)
+    for nxt in graph[node]:
+        indegrees[nxt] -= 1
+        if indegrees[nxt] == 0:
+            q.append(nxt)
 
-result = sys.maxsize
-
-for o in list(permutations(orders, K)):
-    graph = [[n for n in row] for row in temp]
-    for order in o:
-        graph = func(order[0] - order[2] - 1, order[1] - order[2] - 1, order[0] + order[2] - 1, order[1] + order[2] - 1, graph)
-    for row in graph:
-        result = min(sum(row), result)
-print(result)
+print(*result)
