@@ -1,26 +1,12 @@
-# 2252번
-from collections import defaultdict, deque
+# 2056번
 
-N, M = map(int, input().split())
-graph = defaultdict(list)
-indegrees = [0] * (N + 1)
-for _ in range(M):
-    a, b = map(int, input().split())
-    indegrees[b] += 1
-    graph[a].append(b)
+N = int(input())
+dp = [0] * (N + 1)
 
-q = deque()
 for i in range(1, N + 1):
-    if indegrees[i] == 0:
-        q.append(i)
-
-result = []
-while q:
-    node = q.popleft()
-    result.append(node)
-    for nxt in graph[node]:
-        indegrees[nxt] -= 1
-        if indegrees[nxt] == 0:
-            q.append(nxt)
-
-print(*result)
+    cost, count, *prev = map(int, input().split())
+    dp[i] = cost
+    for j in prev:
+        dp[i] = max(dp[i], dp[j] + cost)
+    
+print(max(dp))
