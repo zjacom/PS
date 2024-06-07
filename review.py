@@ -1,52 +1,37 @@
-# 14263번
-from collections import defaultdict
-import heapq
+# 1005번
+from collections import defaultdict, deque
 
-N, M = map(int, input().split())
+results = []
+TC = int(input())
+for _ in range(TC):
+    N, K = map(int, input().split())
+    costs = [0] + list(map(int, input().split()))
+    dic = defaultdict(list)
+    indegrees = [0] * (N + 1)
+    for _ in range(K):
+        a, b = map(int, input().split())
+        dic[a].append(b)
+        indegrees[b] += 1
+    target = int(input())
+    
+    dp = [0] * (N + 1)
+    q = deque()
+    for i in range(1, N + 1):
+        if not indegrees[i]:
+            q.append(i)
+            dp[i] = costs[i]
+    
+    while q:
+        node = q.popleft()
 
-grid = [list(input()) for _ in range(N)]
+        for nxt in dic[node]:
+            indegrees[nxt] -= 1
+            dp[nxt] = max(dp[nxt], dp[node] + costs[nxt])
+            if not indegrees[nxt]:
+                q.append(nxt)
 
-dic = defaultdict(lambda: [M, 0, 0, N]) # left, right, down, up
+    results.append(dp[target])
 
-for y in range(N):
-    for x in range(M):
-        if grid[y][x] != ".":
-            card = grid[y][x]
-            dic[card][0] = min(dic[card][0], x)
-            dic[card][1] = max(dic[card][1], x)
-            dic[card][2] = max(dic[card][2], y)
-            dic[card][3] = min(dic[card][3], y)
 
-indegrees = defaultdict(int)
-graph = defaultdict(list)
-
-for card, (left, right, down, up) in dic.items():
-    for y in range(up, down + 1):
-        for x in range(left, right + 1):
-            if grid[y][x] == ".":
-                print(-1)
-                exit(0)
-            if grid[y][x] != card and grid[y][x] not in graph[card]:
-                indegrees[grid[y][x]] += 1
-                graph[card].append(grid[y][x])
-
-q = []
-
-for card in dic.keys():
-    if card not in indegrees:
-        heapq.heappush(q, card)
-
-order = []
-while q:
-    node = heapq.heappop(q)
-    order.append(node)
-
-    for nxt in graph[node]:
-        indegrees[nxt] -= 1
-        if indegrees[nxt] == 0:
-            heapq.heappush(q, nxt)
-
-if len(order) != len(dic):
-    print(-1)
-else:
-    print(''.join(order))
+for res in results:
+    print(res)
