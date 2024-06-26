@@ -1,13 +1,25 @@
-# 1515번
-import sys
+# 19637번
+N, M = map(int, input().split())
 
-s = list(input())
+styles = []
+for _ in range(N):
+    a, b = input().split()
+    styles.append((a, int(b)))
 
-for num in range(1, sys.maxsize):
-    if not s:
-        print(num - 1)
-        break
-    temp = list(str(num))
-    for n in temp:
-        if s and s[0] == n:
-            s.pop(0)
+result = []
+
+for _ in range(M):
+    num = int(input())
+
+    left, right = 0, len(styles) - 1
+
+    while left <= right:
+        mid = (left + right) // 2
+        if styles[mid][1] >= num:
+            right = mid - 1
+        else:
+            left = mid + 1
+    result.append(styles[left][0])
+
+for res in result:
+    print(res)
