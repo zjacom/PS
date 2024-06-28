@@ -7,23 +7,21 @@ for _ in range(N):
 
 pillars = sorted(pillars, key=lambda x: x[0])
 
-left, right = 0, N - 1
-lx, lh = pillars[left][0], pillars[left][1]
-rx, rh = pillars[right][0], pillars[right][1]
-answer = 0
-while left < right:
-    if lh < rh:
-        left += 1
-        if pillars[left][1] > lh:
-            answer += (pillars[left][0] - lx) * pillars[left][1]
-            lx, lh = pillars[left][0], pillars[left][1]
-    elif rh < lh:
-        right -= 1
-        if pillars[right][1] > rh:
-            answer += (rx - pillars[right][0]) * pillars[right][1]
-            rx, rh = pillars[right][0], pillars[right][1]
-    else:
-        left += 1
-        right -= 1
+maxi = max(pillars, key=lambda x: x[1])
+idx = pillars.index(maxi)
 
-print(answer)
+lx, lh = pillars[0][0], pillars[0][1]
+rx, rh = pillars[N - 1][0], pillars[N - 1][1]
+answer = 0
+
+for i in range(1, idx + 1):
+    if lh <= pillars[i][1]:
+        answer += (pillars[i][0] - lx) * lh
+        lx, lh = pillars[i][0], pillars[i][1]
+
+for i in range(N - 2, idx - 1, -1):
+    if rh <= pillars[i][1]:
+        answer += (rx - pillars[i][0]) * rh
+        rx, rh = pillars[i][0], pillars[i][1]
+
+print(answer + maxi[1])
