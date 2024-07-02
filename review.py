@@ -10,11 +10,8 @@ for _ in range(N):
     elif i[0] == "L" and s:
         stack.append(s.pop())
     elif i[0] == "D" and stack:
-        s.append(stack.pop(0))
+        s.append(stack.pop())
     elif i[0] == "B" and s:
         s.pop()
-
-print(s)
-print(stack)
 
 print(''.join(s + stack[::-1]))
