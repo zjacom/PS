@@ -1,25 +1,20 @@
-# 19637번
-N, M = map(int, input().split())
+# 1406번
 
-styles = []
+s = list(input())
+N = int(input())
+stack = []
 for _ in range(N):
-    a, b = input().split()
-    styles.append((a, int(b)))
+    i = input()
+    if i[0] == "P":
+        s.append(i[2])
+    elif i[0] == "L" and s:
+        stack.append(s.pop())
+    elif i[0] == "D" and stack:
+        s.append(stack.pop(0))
+    elif i[0] == "B" and s:
+        s.pop()
 
-result = []
+print(s)
+print(stack)
 
-for _ in range(M):
-    num = int(input())
-
-    left, right = 0, len(styles) - 1
-
-    while left <= right:
-        mid = (left + right) // 2
-        if styles[mid][1] >= num:
-            right = mid - 1
-        else:
-            left = mid + 1
-    result.append(styles[left][0])
-
-for res in result:
-    print(res)
+print(''.join(s + stack[::-1]))
