@@ -1,28 +1,22 @@
-import sys
-input = sys.stdin.readline
 from collections import deque
 
-# input
 N, K = map(int, input().split())
 
-visited = [-1 for _ in range(100_001)]
+q = deque([N])
+visited = [-1] * 100001
 visited[N] = 0
 
-q = deque()
-q.append(N)
-
 while q:
-    cx = q.popleft()
-    if cx == K:
-        print(visited[cx])
+    node = q.popleft()
+    if node == K:
+        print(visited[node])
         break
-    if 0 <= cx - 1 < 100_001 and visited[cx - 1] == -1:
-        visited[cx - 1] = visited[cx] + 1
-        q.append(cx - 1)
-    if 0 < 2 * cx < 100_001 and visited[2 * cx] == -1:
-        visited[2 * cx] = visited[cx]
-        q.appendleft(2 * cx)
-    if 0 <= cx + 1 < 100_001 and visited[cx + 1] == -1:
-        visited[cx + 1] = visited[cx] + 1
-        q.append(cx + 1)
-        
+    if node - 1 >= 0 and visited[node - 1] == -1:
+        q.append(node - 1)
+        visited[node - 1] = visited[node] + 1
+    if 2 * node <= 100000 and visited[2 * node] == -1:
+        q.append(2 * node)
+        visited[2 * node] = visited[node]
+    if node + 1 <= 100000 and visited[node + 1] == -1:
+        q.append(node + 1)
+        visited[node + 1] = visited[node] + 1
