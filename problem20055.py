@@ -6,10 +6,15 @@ step = 0
 while True:
     step += 1
 
+    count = 0
     for i in range(len(robots)):
         robots[i] += 1
-        if robots[i] == N:
-            robots.pop(0)
+        if robots[i] >= N:
+            count += 1
+            
+    while count > 0:
+        robots.pop(0)
+        count -= 1
     
     belt = [belt[-1]] + belt[:-1]
 
@@ -24,5 +29,3 @@ while True:
 
     if belt.count(0) >= K:
         break
-
-print(step)

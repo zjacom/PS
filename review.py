@@ -1,17 +1,21 @@
-# 1406번
+# 20922번
+from collections import defaultdict
 
-s = list(input())
-N = int(input())
-stack = []
-for _ in range(N):
-    i = input()
-    if i[0] == "P":
-        s.append(i[2])
-    elif i[0] == "L" and s:
-        stack.append(s.pop())
-    elif i[0] == "D" and stack:
-        s.append(stack.pop())
-    elif i[0] == "B" and s:
-        s.pop()
+N, K = map(int, input().split())
+arr = list(map(int, input().split()))
 
-print(''.join(s + stack[::-1]))
+left, right = 0, 0
+answer = 0
+dic = defaultdict(int)
+
+while right < N:
+    if dic[arr[right]] == K:
+        dic[arr[left]] -= 1
+        left += 1
+    else:
+        dic[arr[right]] += 1
+        right += 1
+    
+    answer = max(answer, right - left)
+    
+print(answer)
