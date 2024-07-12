@@ -1,21 +1,22 @@
-# 20922번
-from collections import defaultdict
+# 12919번
 
-N, K = map(int, input().split())
-arr = list(map(int, input().split()))
+S = input()
+T = input()
 
-left, right = 0, 0
-answer = 0
-dic = defaultdict(int)
 
-while right < N:
-    if dic[arr[right]] == K:
-        dic[arr[left]] -= 1
-        left += 1
-    else:
-        dic[arr[right]] += 1
-        right += 1
+def recur(s):
+    if s == S:
+        print(1)
+        exit(0)
+    if len(s) < len(S):
+        return
     
-    answer = max(answer, right - left)
+    if s[-1] == "A":
+        recur(s[:-1])
     
-print(answer)
+    if s[0] == "B":
+        recur(s[1:][::-1])
+
+
+recur(T)
+print(0)
