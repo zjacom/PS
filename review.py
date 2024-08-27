@@ -1,22 +1,4 @@
-# 12919번
+# 16234번
 
-S = input()
-T = input()
-
-
-def recur(s):
-    if s == S:
-        print(1)
-        exit(0)
-    if len(s) < len(S):
-        return
-    
-    if s[-1] == "A":
-        recur(s[:-1])
-    
-    if s[0] == "B":
-        recur(s[1:][::-1])
-
-
-recur(T)
-print(0)
+N, L, R = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(N)]
