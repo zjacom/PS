@@ -2,14 +2,16 @@ import sys
 
 N = int(input())
 
-words = [input() for _ in range(N)]
+a = [input() for _ in range(N)]
 
-words = sorted(enumerate(words), key=lambda x: (x[1], x[0]))
+words = sorted(enumerate(a), key=lambda x: x[1])
 
-words = [x[1] for x in words]
-
+dp = [0] * N
 
 def compare(s1, s2):
+    if s1 == s2:
+        return -sys.maxsize
+    
     r = min(len(s1), len(s2))
     count = 0
 
@@ -21,12 +23,20 @@ def compare(s1, s2):
     return count
 
 maxi = -1
-a, b = 0, 0
 
 for i in range(N - 1):
-    length = compare(words[i], words[i + 1])
-    if maxi < length and words[i] != words[i + 1]:
-        a, b = words[i], words[i + 1]
+    length = compare(words[i][1], words[i + 1][1])
+    if maxi <= length:
         maxi = length
+        dp[words[i][0]] = max(dp[words[i][0]], maxi)
+        dp[words[i + 1][0]] = max(dp[words[i + 1][0]], maxi)
 
-print(a, b)
+cnt = 0
+for i in range(N):
+    if cnt == 0 and dp[i] == maxi:
+        print(a[i])
+        cnt += 1
+        pre = a[i][:maxi]
+    elif cnt == 1 and dp[i] == maxi and a[i][:maxi] == pre:
+        print(a[i])
+        break
