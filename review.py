@@ -1,23 +1,24 @@
-# 1253번
+# 1027번
+import sys
 
 N = int(input())
-arr = sorted(list(map(int, input().split())))
-result = 0
+buildings = list(map(int, input().split()))
 
-for i in range(N):
-    left, right = 0, N - 1
-    while left < right:
-        s = arr[left] + arr[right]
-        if left == i:
-            left += 1
-        elif right == i:
-            right -= 1
-        elif s == arr[i]:
-            result += 1
-            break
-        elif s < arr[i]:
-            left += 1
-        else:
-            right -= 1
 
-print(result)
+def calc_lean(a, ah, b, bh):
+    return (bh - ah) / (b - a)
+
+dp = [0] * N
+
+for a in range(N - 1):
+    ah = buildings[a]
+    max_lean = -sys.maxsize
+    for b in range(a + 1, N):
+        bh = buildings[b]
+        lean = calc_lean(a, ah, b, bh)
+        if lean > max_lean:
+            dp[a] += 1
+            dp[b] += 1
+            max_lean = lean
+
+print(max(dp))
