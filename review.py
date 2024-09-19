@@ -1,24 +1,27 @@
-# 1027번
-import sys
+# 14658번
 
-N = int(input())
-buildings = list(map(int, input().split()))
+n, m, l, k = map(int, input().split())
+
+stars = []
+
+for _ in range(k):
+    x, y = map(int, input().split())
+    stars.append((x, y))
+
+def counting_stars(x1, y1):
+    count = 0
+    for x, y in stars:
+        if x1 <= x <= x1 + l and y1 <= y <= y1 + l:
+            count += 1
+    
+    return count
 
 
-def calc_lean(a, ah, b, bh):
-    return (bh - ah) / (b - a)
+maxi = 0
+for i in range(k):
+    for j in range(k):
+        x1, y1 = min(stars[i][0], stars[j][0]), min(stars[i][1], stars[j][1])
+        maxi = max(maxi, counting_stars(x1, y1))
 
-dp = [0] * N
 
-for a in range(N - 1):
-    ah = buildings[a]
-    max_lean = -sys.maxsize
-    for b in range(a + 1, N):
-        bh = buildings[b]
-        lean = calc_lean(a, ah, b, bh)
-        if lean > max_lean:
-            dp[a] += 1
-            dp[b] += 1
-            max_lean = lean
-
-print(max(dp))
+print(k - maxi)
